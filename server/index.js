@@ -8,9 +8,7 @@ app.set('trust proxy', 1)
 
 // Main route
 app.get('/', (req, res) => {
-	res.render('./../client/index.ejs', {
-		text_try: "salut les gens !!"
-	})
+	res.render('./../client/index.ejs')
 })
 
 app.listen(port)
