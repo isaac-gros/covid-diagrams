@@ -5,6 +5,7 @@ const port = 8080
 let app = express()
 let bodyParser = require('body-parser')
 let Stats = require('./models/stats')
+let State = require('./models/state')
 
 // Set templating
 app.set('view engine', 'ejs')
@@ -15,20 +16,26 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 /**
- * Get all stats
+ * GET
  */
+
+// Get all stats and state
 app.get('/', (req, res) => {
 	Stats.all( function (stats) {
-		console.log(stats)
-        res.render('./../client/base.ejs', {
-			stats: stats
-		})
-    })
-})
+		State.all( function (state) {
+			res.render('./../client/base.ejs', {
+				stats: stats,
+				state: state
+			})
+		});
+	});
+});
 
 /**
- * Create a new stat item
+ * POST
  */
+
+// Create a new stat item
 app.post('/', (req, res) => {
 	// Create the request object
 	let object = {
@@ -53,7 +60,6 @@ app.post('/', (req, res) => {
 		})
 	} catch (e) {
 		console.error(e)
-		res.redirect('/')
 	}
 
 })
