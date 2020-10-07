@@ -1,3 +1,39 @@
-<div>
-	test
-</div>
+<form class="row">
+	<div class="col-12">
+		<h1>Données nationales COVID-19</h1>
+		<p>Consultez les chiffres du COVID-19 à un jour et un endroit précis en France.</p>
+	</div>
+	<div class="col-12 col-md-6">
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<span class="input-group-text">Date</span>
+			</div>
+			<input type="text" class="form-control" placeholder="yyyy/mm/dd" aria-label="Date">
+		</div>
+	</div>
+	<div class="col-12 col-md-6">
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<label class="input-group-text" for="state">Département</label>
+			</div>
+			<select class="custom-select" id="state">
+				<option value="*" selected>Toute la France</option>
+				<option value="DEP-01">Ain</option>
+				<option value="DEP-02">Aisne</option>
+				<option value="DEP-03">Allier</option>
+			</select>
+		</div>
+	</div>
+	<div class="col-12">
+		<%- include('./diagram'); %>
+	</div>
+	<div class="col-12">
+		<div class="container">
+			<div class="row float-right">
+				<div class="col-6">
+					<button type="button" id="update-diagram" class="btn btn-primary">Actualiser</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

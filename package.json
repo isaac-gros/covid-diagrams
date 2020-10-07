@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "axios": "^0.20.0",
+    "bootstrap": "^4.5.2",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "nodemon": "^2.0.4"
