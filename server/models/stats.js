@@ -36,6 +36,20 @@ class Stats {
 		}
 	}
 
+	/**
+     * Find the last item one
+     */
+	static async findLastOne() {
+		params.ScanIndexForward = false
+		params.Limit = 1
+		try {
+			let result = await docClient.scan(params).promise();
+			return result
+		} catch (err) {
+			console.error("There was a problem recovering : ", err)
+		}
+	}
+
 }
 
 module.exports = Stats
