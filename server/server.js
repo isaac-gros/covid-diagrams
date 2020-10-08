@@ -82,4 +82,6 @@ app.post('/', (req, res) => {
 
 })
 
-app.listen(port)
+app.listen(port, function() {
+	console.log('Connected !')
+})
