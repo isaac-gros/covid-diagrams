@@ -23,15 +23,31 @@ app.use('/node_modules', express.static('node_modules'))
  * GET
  */
 
+function sortByAsc(array) {
+	return array.sort((a, b) => {
+		return a.department_name.localeCompare(b.department_name)
+	});
+}
+
 // Get all stats and state
 app.get('/', async (req, res) => {
+	let arr = []
 	// Instance of class
 	let stats = await Stats.getAll()
 	let state = await State.getAll()
 
+	for (let value of Object.values(state.Items)) {
+		arr.push({
+			'department_id': value.department_id,
+			'department_name': value.department_name
+		})
+	}
+
+	arr = sortByAsc(arr)
+
 	res.render('./../client/index.ejs', {
 		stats: stats,
-		state: state
+		state: arr
 	})
 });
 

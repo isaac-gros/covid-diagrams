@@ -18,7 +18,7 @@
 			</div>
 			<select class="custom-select" id="state">
 				<option value="*" selected>Toute la France</option>
-				<% state.Items.forEach(function(item){ %>
+				<% state.forEach(function(item){ %>
 					<option value="<%- item.department_id %>"><%- item.department_name %></option>
 				<% }); %>
 			</select>
