@@ -18,9 +18,9 @@
 			</div>
 			<select class="custom-select" id="state">
 				<option value="*" selected>Toute la France</option>
-				<option value="DEP-01">Ain</option>
-				<option value="DEP-02">Aisne</option>
-				<option value="DEP-03">Allier</option>
+				<% state.Items.forEach(function(item){ %>
+					<option value="<%- item.department_id %>"><%- item.department_name %></option>
+				<% }); %>
 			</select>
 		</div>
 	</div>
