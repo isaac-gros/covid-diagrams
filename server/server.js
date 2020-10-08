@@ -30,7 +30,7 @@ app.get('/', async (req, res) => {
 	let infos = await Stats.findByInfos("2020-01-01", "DEP-75");
 	let arr = [];
 
-	// Make an array with chart infos
+	// Make an array with graph infos
 	infos.Items.forEach(item => {
 			arr.push([
 				item.hospitalize_count,
