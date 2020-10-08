@@ -1,5 +1,5 @@
 <script type="text/javascript" src="/node_modules/chart.js/dist/Chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/node_modules/axios/dist/axios.min.js"></script>
 <script src="/assets/main.js"></script>
 <script>
 	//  https://coronavirusapi-france.now.sh/AllDataByDate?date=2020-04-19
@@ -10,34 +10,53 @@
 	 * le async mais sur l event click il y a deja un async
 	 */
 
-	async function callApi() {
-		// Date d exemple
-		const date = '2020-04-19'
+	async function fetchStatDataByDate(date = '', code = '') {
+
+        // Check if there are given value for date and code 
+        if(date.length == 0 || code.length == 0) {
+            console.error('Date and department code must be specified.')
+            return;
+        }
+
 		try {
-			// call api
-			const callApi = await axios.get(`https://coronavirusapi-france.now.sh/AllDataByDate?date=${date}`)
-			// result api
-			const resultApi = await callApi.data.allFranceDataByDate
 
-			// check all data in array
-			resultApi.forEach(async (item, i) => {
-				// call db
-				let callDB = await axios.get(`/update/${item.date}/${item.nom}`)
-				let resultDB = await callDB.data
+            // Retrieve stat for given date and filter through the global data
+            let fetchApi = await axios.get(`https://coronavirusapi-france.now.sh/AllDataByDate?date=${date}`)
+            let globalData = await fetchApi.data.allFranceDataByDate
+            let getDepartmentData = globalData.filter(department => department.code == code)
+            let departmentData = getDepartmentData[0]
 
-				// if result is empty then push in db
-				if (Object.keys(resultDB).length === 0) {
-					// Make axios post (requete dans server.js method post)
-					console.log(resultDB)
-				}
-			});
-		} catch(err) {
-			console.error(err)
-		}
+            if(typeof(departmentData) != 'undefined') {
+                let tryUpdateData = await axios.get(`/update/${departmentData.date}/${departmentData.code}`)
 
-	}
-
-	callApi()
-
-
+                // If stat does not exists, create it in DynamoDB
+                // update it otherwise.
+                if(tryUpdateData.status == 204) {
+                    return axios.post(`/`, {
+                        death_count: departmentData.deces,
+                        heal_count: departmentData.gueris,
+                        new_hospitalize_count: departmentData.nouvellesHospitalisations,
+                        source: departmentData.source.nom,
+                        department_name: departmentData.nom,
+                        hospitalize_count: departmentData.hospitalises,
+                        new_intensive_care_count: departmentData.nouvellesReanimations,
+                        department_code: departmentData.code,
+                        date_stat: departmentData.date,
+                        intensive_care_count: departmentData.reanimation,
+                    })
+                } else {
+                    return tryUpdateData
+                }
+            } else {
+                let request = JSON.stringify({
+                    'date_stat': date,
+                    'department_code': code
+                })
+                console.error('No items were found for parameters ' + request)
+                return;
+            }
+		} catch(error) {
+			return error
+        }
+    }
 </script>

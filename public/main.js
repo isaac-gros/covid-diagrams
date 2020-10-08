@@ -36,42 +36,52 @@ let chart = new Chart(ctx, {
 	}
 });
 
-let covidData = []
-let alertArea = document.getElementById('alert');
-let button = document.getElementById('update-diagram')
-
-button.addEventListener('click', async function() {
+document.getElementById('update-diagram').addEventListener('click', async function() {
+	// Reset chart Data
+	chart.data.datasets[0].data = []
+	chart.update()
 
 	// Get the input values
 	let date_value = document.getElementById('date-value').value
 	let department_value = document.getElementById('state').value
 
-	if (date_value !== "" && department_value !== undefined) {
+	if (date_value !== '' && department_value !== '') {
 
-		/**
-		 * Front Request
-		 * Exemple : (2020-01-01, DEP-75)
-		 */
+		updateAlertUser('Recherche en cours...', 'primary')
 		try {
-			const response = await axios.get(`/update/${date_value}/${department_value}`)
-			const result = await response.data
+			let fetchResult = await fetchStatDataByDate(date_value, department_value)
+			console.log(fetchResult)
 
-			// Update chart
-			if (Object.values(result).length > 0) {
-				alertArea.classList.add('d-none');
-				covidData = result.array
-				chart.data.datasets[0].data = data;
+			// // Update chart
+			if (Object.values(fetchResult.data).length > 0) {
+				chart.data.datasets[0].data = fetchResult.data.array;
 				chart.update()
+				updateAlertUser('Tableau mis à jour', 'success')
 			} else {
-				alertArea.classList.remove('d-none');
-				alertArea.innerText = 'Aucune valeur trouvée pour les informations saisies.'
+				let message = 'Aucune valeur trouvée pour les informations saisies.'
+				updateAlertUser(message)
 			}
 		} catch (err) {
 			if(err) {
 				console.log(err)
-				alertArea.classList.remove('d-none')
-				alertArea.innerText = 'Une erreur est survenue, vérifiez la console ou réessayez.'
+				let message = 'Une erreur est survenue, vérifiez la console ou réessayez.'
+				updateAlertUser(message)
 			}
 		}
+	} else {
+		updateAlertUser('Veuillez compléter les champs ci-dessous.')
 	}
 })
+
+// Inform user of it actions
+function updateAlertUser(message = '', type = 'danger') {
+	let alertArea = document.getElementById('alert');
+	alertArea.classList.remove('alert-danger', 'alert-success', 'alert-primary')
+	if(message.length > 0) {
+		alertArea.innerText = message
+		alertArea.classList.add('alert-' + type)
+		alertArea.classList.remove('d-none')
+	} else {
+		alertArea.classList.add('d-none')
+	}
+}

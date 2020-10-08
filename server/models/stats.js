@@ -13,12 +13,14 @@ class Stats {
 	 */
     static create (object, callback) {
 		params.Item = object
+		delete params.FilterExpression
+		delete params.ExpressionAttributeValues
 
 		docClient.put(params, function(err, data) {
 			if (err) {
 				console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
 			} else {
-				callback(JSON.stringify(data, null, 2));
+				callback(params.Item);
 			}
 		});
     }

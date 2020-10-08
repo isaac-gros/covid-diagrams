@@ -53,14 +53,19 @@ app.get('/', async (req, res) => {
 
 // Get the last info has been asked
 app.get('/update/:date_stat/:department_code', async (req, res) => {
-	// Find an item
-	try {
-		let arr = [];
-		let infos = await Stats.findByInfos(req.params.date_stat, req.params.department_code);
 
-		if (infos !== undefined) {
-			// Make an array with graph infos
-			infos.Items.forEach(item => {
+	let datePattern = /[0-9]{4}-[0-9]{2}-[0-9]{2}/
+	let departmenPattern = /^(DEP|REG|)-([0-9]{2}|2(A|B)|97[1-4])$/
+
+	if(req.params.date_stat.match(datePattern) && req.params.department_code.match(departmenPattern)) {
+		// Find an item
+		try {
+			let arr = [];
+			let infos = await Stats.findByInfos(req.params.date_stat, req.params.department_code);
+
+			if (infos.Items.length > 0) {
+				// Make an array with graph infos
+				infos.Items.forEach(item => {
 					arr.push([
 						item.hospitalize_count,
 						item.intensive_care_count,
@@ -69,16 +74,23 @@ app.get('/update/:date_stat/:department_code', async (req, res) => {
 						item.death_count,
 						item.heal_count
 					])
-			});
+				});
 
-			res.status(200).send({ array: arr[0]});
-		} else {
-			console.error('array is undefined')
-			res.status(400).send({err: 'array is undefined'});
+				res.status(200).send({ array: arr[0]});
+			} else {
+				console.error('No items found with request parameters ' + JSON.stringify(req.params, undefined))
+				res.status(204).send({err: 'No items found'});
+			}
+
+		} catch (error) {
+			console.error(error)
+			res.status(500).send({err: error})
 		}
-
-	} catch (e) {
-		console.error(e)
+	} else {
+		let message = 'Excepted format YYYY-MM-DD for date '
+		message += 'and format DEP_TYPE-NUMBER (eg: DEP-75) for department, '
+		message += 'got : ' + JSON.stringify(req.params, undefined)
+		res.status(400).send({err: message})
 	}
 });
 
@@ -88,6 +100,7 @@ app.get('/update/:date_stat/:department_code', async (req, res) => {
 
 // Create a new stat item
 app.post('/', (req, res) => {
+
 	// Create the request object
 	let object = {
 		stat_id: uuidv4(),
@@ -106,15 +119,31 @@ app.post('/', (req, res) => {
 	}
 
 	try {
-		Stats.create(object, function () {
-			res.redirect('/')
+		Stats.create(object, function (data) {
+			if (Object.values(data).length > 0) {
+				let result = []
+				result.push([
+					data.hospitalize_count,
+					data.intensive_care_count,
+					data.new_hospitalize_count,
+					data.new_intensive_care_count,
+					data.death_count,
+					data.heal_count
+				])
+
+				res.status(200).send({ array: result[0]});
+			} else {
+				console.error('No items found with request parameters ' + JSON.stringify(req.params, undefined))
+				res.status(204).send({err: 'No items found'});
+			}
 		})
-	} catch (e) {
-		console.error(e)
+	} catch (error) {
+		console.error(error)
+		res.status(500).send({err: error})
 	}
 
 })
 
 app.listen(port, function() {
-	console.log('Connected !')
+	console.log('Server is running on port ' + port)
 })
