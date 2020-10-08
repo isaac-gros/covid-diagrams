@@ -56,7 +56,6 @@ class Stats {
      */
 	static async findByInfos(date_stat, department_code) {
 		params.FilterExpression = 'date_stat = :date_stat AND department_code = :department_code',
-			//
 		params.ExpressionAttributeValues = {
 			":date_stat": date_stat,
 			":department_code": department_code

@@ -26,13 +26,26 @@ app.get('/', async (req, res) => {
 	// Instance of class
 	let stats = await Stats.getAll()
 	let state = await State.getAll()
-	// Find an item
-	let findByInfos = await Stats.findByInfos("2020-01-01", "DEP-75");
-	console.log(findByInfos)
+	// Find an item (axios datas)
+	let infos = await Stats.findByInfos("2020-01-01", "DEP-75");
+	let arr = [];
+
+	// Make an array with chart infos
+	infos.Items.forEach(item => {
+			arr.push([
+				item.hospitalize_count,
+				item.intensive_care_count,
+				item.new_hospitalize_count,
+				item.new_intensive_care_count,
+				item.death_count,
+				item.heal_count
+			])
+	});
 
 	res.render('./../client/index.ejs', {
 		stats: stats,
-		state: state
+		state: state,
+		infos: arr
 	})
 });
 

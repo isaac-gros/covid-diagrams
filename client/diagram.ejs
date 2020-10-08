@@ -1,6 +1,10 @@
 <script type="text/javascript" src="/node_modules/chart.js/dist/Chart.min.js"></script>
 <script>
     let ctx = document.getElementById('diagram');
+    // Make an array with string has been return
+    let infos = '<%= infos %>'
+    infos = infos.split(',')
+
     let myChart = new Chart(ctx, {
         responsive: false,
         maintainAspectRatio: false,
@@ -8,7 +12,7 @@
         data: {
             labels: ['Hospitalisés', 'En réanimation', 'Nouveaux hospitalisés', 'Nouveaux en réanimations', 'Décès', 'Guéris'],
             datasets: [{
-                data: [172, 24, 3, 1, 60, 183],
+                data: infos,
                 backgroundColor: [
                     'rgba(230, 199, 44, 0.2)',
                     'rgba(230, 156, 44, 0.2)',
