@@ -20,15 +20,15 @@ app.use(bodyParser.json())
  */
 
 // Get all stats and state
-app.get('/', (req, res) => {
-	Stats.all( function (stats) {
-		State.all( function (state) {
-			res.render('./../client/base.ejs', {
-				stats: stats,
-				state: state
-			})
-		});
-	});
+app.get('/', async (req, res) => {
+	// Instance of class
+	let stats = await Stats.getAll()
+	let state = await State.getAll()
+
+	res.render('./../client/base.ejs', {
+		stats: stats,
+		state: state
+	})
 });
 
 /**

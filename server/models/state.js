@@ -9,15 +9,14 @@ class State {
 	/**
      * Get all items
      */
-    static all (callback) {
-        docClient.scan(params, function (err, data) {
-			if (err) {
-				console.error("error : ", err)
-			} else {
-				callback(data)
-			}
-		});
-    }
+    static async getAll() {
+		try {
+			let result = await docClient.scan(params).promise();
+			return result
+		} catch (err) {
+			console.error("There was a problem recovering : ", err)
+		}
+	}
 
 }
 
