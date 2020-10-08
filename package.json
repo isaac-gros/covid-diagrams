@@ -1,4 +1,27 @@
 {
+  "name": "covid-diagrams",
+  "version": "1.0.0",
+  "description": "Display COVID-19 stats by date.",
+  "author": "IWM-A5-2021",
+  "contributors": [
+    {
+      "name" : "Isaac Gros", 
+      "url" : "https://github.com/isaac-gros"
+    },
+    {
+      "name": "Lucas Laurens",
+      "url": "https://github.com/LucasLaurens"
+    }
+  ],
+  "main": "server/server.js",
+  "keywords": [
+    "nodejs",
+    "bootstrap",
+    "express",
+    "axios",
+    "chartjs",
+    "dynamodb"
+  ],
   "dependencies": {
     "aws-sdk": "^2.768.0",
     "axios": "^0.20.0",
