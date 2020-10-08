@@ -27,7 +27,7 @@ app.get('/', async (req, res) => {
 	let stats = await Stats.getAll()
 	let state = await State.getAll()
 
-	res.render('./../client/base.ejs', {
+	res.render('./../client/index.ejs', {
 		stats: stats,
 		state: state
 	})
