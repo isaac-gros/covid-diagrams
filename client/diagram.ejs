@@ -1,1 +1,51 @@
-<div id="diagram"></div>
+<script type="text/javascript" src="/node_modules/chart.js/dist/Chart.min.js"></script>
+<script>
+    let ctx = document.getElementById('diagram');
+    let myChart = new Chart(ctx, {
+        responsive: false,
+        maintainAspectRatio: false,
+        type: 'bar',
+        data: {
+            labels: ['Hospitalisés', 'En réanimation', 'Nouveaux hospitalisés', 'Nouveaux en réanimations', 'Décès', 'Guéris'],
+            datasets: [{
+                data: [172, 24, 3, 1, 60, 183],
+                backgroundColor: [
+                    'rgba(230, 199, 44, 0.2)',
+                    'rgba(230, 156, 44, 0.2)',
+                    'rgba(44, 137, 230, 0.2)',
+                    'rgba(53, 44, 230, 0.2)',
+                    'rgba(230, 44, 44, 0.2)',
+                    'rgba(67, 209, 67, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(230, 199, 44, 1)',
+                    'rgba(230, 156, 44, 1)',
+                    'rgba(44, 137, 230, 1)',
+                    'rgba(53, 44, 230, 1)',
+                    'rgba(230, 44, 44, 1)',
+                    'rgba(67, 209, 67, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return tooltipItem.yLabel;
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
