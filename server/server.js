@@ -14,6 +14,8 @@ app.set('trust proxy', 1)
 // Set Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use('/assets', express.static('public'))
+app.use('/node_modules', express.static('node_modules'))
 
 /**
  * GET
