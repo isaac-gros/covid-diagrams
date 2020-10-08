@@ -26,6 +26,9 @@ app.get('/', async (req, res) => {
 	// Instance of class
 	let stats = await Stats.getAll()
 	let state = await State.getAll()
+	// Find an item
+	let findByInfos = await Stats.findByInfos("2020-01-01", "DEP-75");
+	console.log(findByInfos)
 
 	res.render('./../client/index.ejs', {
 		stats: stats,
@@ -46,12 +49,12 @@ app.post('/', (req, res) => {
 		heal_count: req.body.heal_count,
 		new_hospitalize_count: req.body.new_hospitalize_count,
 		source: req.body.source,
-		state_name: req.body.state_name,
+		department_name: req.body.department_name,
 		hospitalize_count: req.body.hospitalize_count,
 		new_intensive_care_count: req.body.new_intensive_care_count,
 		created_at: new Date().getTime(),
 		updated_at: new Date().getTime(),
-		state_code: req.body.state_code,
+		department_code: req.body.department_code,
 		date_stat: req.body.date_stat,
 		intensive_care_count: req.body.intensive_care_count
 	}
