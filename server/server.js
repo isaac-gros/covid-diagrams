@@ -52,7 +52,7 @@ app.post('/', (req, res) => {
 		created_at: new Date().getTime(),
 		updated_at: new Date().getTime(),
 		state_code: req.body.state_code,
-		date: req.body.date,
+		date_stat: req.body.date_stat,
 		intensive_care_count: req.body.intensive_care_count
 	}
 

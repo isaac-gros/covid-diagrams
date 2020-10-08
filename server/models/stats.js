@@ -50,6 +50,24 @@ class Stats {
 		}
 	}
 
+
+	/**
+     * Find item by date and state
+     */
+	static async findByDate(date_stat) {
+		params.FilterExpression = "date_stat = :date_stat"
+		params.ExpressionAttributeValues = {
+			":date_stat": date_stat
+		}
+
+		try {
+			let result = await docClient.scan(params).promise();
+			return result
+		} catch (err) {
+			console.error("There was a problem recovering : ", err)
+		}
+	}
+
 }
 
 module.exports = Stats
