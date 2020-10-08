@@ -1,3 +1,4 @@
+const cors = require("cors");
 const express = require('express')
 const { v4: uuidv4 } = require('uuid');
 
@@ -14,6 +15,7 @@ app.set('trust proxy', 1)
 // Set Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cors());
 app.use('/assets', express.static('public'))
 app.use('/node_modules', express.static('node_modules'))
 
@@ -26,27 +28,42 @@ app.get('/', async (req, res) => {
 	// Instance of class
 	let stats = await Stats.getAll()
 	let state = await State.getAll()
-	// Find an item (axios datas)
-	let infos = await Stats.findByInfos("2020-01-01", "DEP-75");
-	let arr = [];
-
-	// Make an array with graph infos
-	infos.Items.forEach(item => {
-			arr.push([
-				item.hospitalize_count,
-				item.intensive_care_count,
-				item.new_hospitalize_count,
-				item.new_intensive_care_count,
-				item.death_count,
-				item.heal_count
-			])
-	});
 
 	res.render('./../client/index.ejs', {
 		stats: stats,
-		state: state,
-		infos: arr
+		state: state
 	})
+});
+
+// Get the last info has been asked
+app.get('/update/:date_stat/:department_code', async (req, res) => {
+	// Find an item
+	try {
+		let arr = [];
+		let infos = await Stats.findByInfos(req.params.date_stat, req.params.department_code);
+
+		if (infos !== undefined) {
+			// Make an array with graph infos
+			infos.Items.forEach(item => {
+					arr.push([
+						item.hospitalize_count,
+						item.intensive_care_count,
+						item.new_hospitalize_count,
+						item.new_intensive_care_count,
+						item.death_count,
+						item.heal_count
+					])
+			});
+
+			res.status(200).send({ array: arr[0]});
+		} else {
+			console.error('array is undefined')
+			res.status(400).send({err: 'array is undefined'});
+		}
+
+	} catch (e) {
+		console.error(e)
+	}
 });
 
 /**
